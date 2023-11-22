@@ -1,196 +1,182 @@
 <?php
-require('./database/connection.php');
-session_start();
-$status = $_SESSION['status'];
-if ($status != 'auth' || is_null($status) || is_null($_SESSION['username']) || is_null($_SESSION['name'])) {
-    header('Location: ./pages/login.php');
-    die();
-}
+require('./adminpanel/database/connection.php');
 ?>
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+  <!-- Link Swiper's CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <link rel="canonical" href="https://demo-basic.adminkit.io/" />
-
-    <title>Gallery - Medaritown House</title>
-
-    <link href="./assets/css/app.css" rel="stylesheet">
-    <script src="./assets/js/sweetalert.js"></script>
+  <link rel="stylesheet" href="./assets/fonts/fonts.css" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <title>Medaritown House</title>
 </head>
 
-<body>
-    <div class="wrapper">
-        <?php require('./components/sidebar.php');
-        sidebar('gallery');
-        ?>
-
-        <div class="main">
-            <?php require('./components/navbar.php'); ?>
-
-            <main class="content">
-                <div class="container-fluid p-0">
-                    <?php
-                    $id = $_GET['id'];
-                    if (is_null($id) || $id == "") { ?>
-                        <!-- Table Section Start -->
-                        <!-- Query PHP For Galery Start -->
-                        <?php
-                        $q = "select * from gallery";
-                        $res = mysqli_query($conn, $q);
-                        ?>
-                        <!-- Query PHP For Galery End -->
-                        <div id="dataGallery" style="overflow-x: auto;">
-                            <h1 class="h3 mb-3"><strong>Gallery</strong> Page</h1>
-                            <button class="my-2 btn btn-primary" onclick="toggleFormInsert()">Tambah Data Gallery</button>
-                            <table class="table table-striped table-hover text-center">
-                                <thead>
-                                    <th scope="col">No</th>
-                                    <th scope="col">Judul</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Gambar</th>
-                                    <th scope="col">Aksi</th>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if (0 >= $res->fetch_assoc()) { ?>
-                                        <tr>
-                                            <td colspan="5">
-                                                Data Gallery Belum Tersedia,Segera Tambahkan Gambar Gallery!
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                    <?php
-                                    $i = 0;
-                                    foreach ($res as $d) { ?>
-                                        <tr>
-                                            <td><?php echo $i + 1 ?></td>
-                                            <td><?php echo $d['title'] ?></td>
-                                            <td><?php echo $d['description'] ?></td>
-                                            <td><a href="<?php echo $d['image'] ?>" target="black" class="badge bg-secondary"><i class="align-middle" data-feather="eye"></i></a></td>
-                                            <td>
-                                                <a class="btn bg-warning my-2" href="./gallery.php?id=<?php echo $d['id'] ?>"><i class="align-middle" data-feather="edit"></i></a>
-                                                <form action="./action/actionDeleteGallery.php" method="POST">
-                                                    <input type="text" name="id" class="d-none" value="<?php echo $d['id'] ?>">
-                                                    <button class="btn bg-danger" type="submit"><i class="align-middle" data-feather="trash"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php $i++;
-                                    } ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Table Section End -->
-                        <!-- Insert Data Section Start -->
-                        <div id="insertGallery" class="d-none">
-                            <h1 class="h3 mb-3"><strong>Insert Gallery</strong> Page</h1>
-                            <div class="row my-2">
-                                <div class="col-12 col-lg-6">
-                                    <form action="./action/actionInsertGallery.php" method="POST" enctype="multipart/form-data" id="insertForm">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label fs-4">Judul Gallery : </label>
-                                            <input type="text" class="form-control" id="title" aria-describedby="title" name="title" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label fs-4">Deskripsi Gallery : </label>
-                                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label fs-4">File Gambar Gallery : </label>
-                                            <input class="form-control" type="file" id="formFile" name="image" accept="image/*" required>
-                                        </div>
-                                        <button class="btn btn-warning my-2 text-black" type="submit">Tambah Data</button>
-                                        <button class="btn btn-secondary" onclick="toggleFormInsert()" type="reset">Cancel</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Table Section Start End -->
-                    <?php } else {  ?>
-                        <!-- Update Form Gallery Start -->
-                        <?php
-                        $q = "select * from gallery where id=$id";
-                        $res = mysqli_query($conn, $q);
-                        $res = $res->fetch_assoc();
-                        if ($res <= 0) {
-                            header('Location: ./gallery.php');
-                        }
-                        ?>
-                        <div id="updateGallery">
-                            <h1 class="h3 mb-3"><strong>Update Gallery</strong> Page</h1>
-                            <div class="row my-2">
-                                <div class="col-12 col-lg-6">
-                                    <form action="./action/actionUpdateGallery.php" method="POST" enctype="multipart/form-data" id="updateForm">
-                                        <input type="text" class="d-none" name="id" value="<?php echo $res['id'] ?>">
-                                        <div class="mb-3">
-                                            <label for="title" class="form-label fs-4">Judul Gallery : </label>
-                                            <input type="text" class="form-control" id="title" aria-describedby="title" name="title" value="<?php echo $res['title'] ?>" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label fs-4">Deskripsi Gallery : </label>
-                                            <textarea class="form-control" id="description" name="description" rows="3" required><?php echo $res['description'] ?></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label fs-4">File Gambar Gallery : </label>
-                                            <input class="form-control" type="file" id="formFile" name="image" accept="image/*">
-                                            <span class="text-danger">Tidak Perlu Di Isi Jika Tidak Ingin Merubah Data Gambar</span>
-                                        </div>
-                                        <button class="btn btn-warning my-2 text-black" type="submit">Update Data</button>
-                                        <a class="btn btn-secondary" href="./gallery.php">Cancel</a>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Update Form Gallery End -->
-                    <?php } ?>
-                </div>
-            </main>
-        </div>
+<body class="overflow-x-hidden">
+  <!-- Navbar Start -->
+  <nav id="mynav" class="fixed z-10 w-screen h-1/3 max-h-16 md:max-h-20 bg-primary-color">
+    <div class="container flex items-center justify-center h-full mx-auto lg:justify-between lg:px-10">
+      <h1 class="text-3xl font-bold text-white font-poppins">Logo</h1>
+      <ul class="justify-between hidden w-2/5 text-sm font-medium text-white lg:flex font-poppins">
+        <li><a href="./index.php">Home</a></li>
+        <li><a href="./gallery.php">Galeri</a></li>
+        <li><a href="#">Tentang Kami</a></li>
+        <li><a href="#">Lokasi</a></li>
+        <li><a href="#">Dokumen</a></li>
+      </ul>
     </div>
-    <script src="./assets/js/app.js"></script>
-    <script>
-        function toggleFormInsert() {
-            document.getElementById('insertForm').reset();
-            const dataGallery = document.getElementById('dataGallery');
-            dataGallery.classList.toggle('d-none');
-            const insertGallery = document.getElementById('insertGallery');
-            insertGallery.classList.toggle('d-none');
-        }
-    </script>
+  </nav>
+  <!-- Navbar End -->
+  <!-- Banner Content Start -->
+  <section class="w-screen h-[calc(100%-4rem)] relative">
+    <img src="./assets/img/gambar-header.webp" alt="Home Image" class="w-full h-full brightness-75 object-cover lg:object-fill" />
+    <div class="w-full h-full absolute top-0 flex flex-col justify-center items-center gap-3 px-4 md:px-0">
+      <h2 class="font-poppins text-3xl font-[600] text-center text-white">
+        Jelajahi Koleksi Rumah Mewah Kami
+      </h2>
+      <p class="w-full sm:w-1/2 lg:w-1/3 text-center font-poppins text-white text-md font-normal">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
+        vulputate libero et velit interdum, ac aliquet odio mattis. Class
+        aptent taciti sociosqu ad litora torquent per conubia nostra, per
+        inceptos himenaeos.
+      </p>
+    </div>
+  </section>
+  <!-- Banner Content End -->
 
-    <?php ?>
-    <?php
-    $errorInsertGallery = $_SESSION['errorInsertGallery'];
-    $insertGalleryMessage = $_SESSION['insertGalleryMessage'];
-    unset($_SESSION['errorInsertGallery']);
-    unset($_SESSION['insertGalleryMessage']);
-    session_write_close();
-    ?>
-    <?php if ($errorInsertGallery == false && !is_null($errorInsertGallery)) { ?>
-        <script>
-            Swal.fire({
-                icon: "success",
-                title: "Berhasil",
-                text: "<?php echo $insertGalleryMessage; ?>",
-            });
-        </script>
-    <?php } else if ($errorInsertGallery == true) { ?>
-        <script>
-            Swal.fire({
-                icon: "error",
-                title: "Gagal",
-                text: "<?php echo $insertGalleryMessage; ?>",
-            });
-        </script>
-    <?php } ?>
+  <!-- Section Tentang Kami Start -->
+  <section>
+    <h2 class="font-bold text-2xl mt-8 md:mt-12 text-center">Galeri Rumah Kami</h2>
+    <div class="px-12">
+      <p class="text-center mt-4 mb-8">Beberapa macam pilihan rumah yang ada di perumahan kami.</p>
+    </div>
+  </section>
+
+
+
+  <!--Galery Rumah Start-->
+  <?php
+  $q = "select * from gallery";
+  $res = mysqli_query($conn, $q);
+  ?>
+  <section class="w-screen">
+    <div class="container mx-auto flex flex-wrap gap-y-3 lg:gap-y-6 lg:px-10">
+      <?php if (0 >= $res->fetch_assoc()) { ?>
+        <div class="container mx-auto flex justify-center items-center py-2">
+          <h2 class="text-2xl font-poppins font-semibold text-center">Coming Soon: A Sneak Peek into Our Gallery of Elegance!</h2>
+        </div>
+      <?php } else { ?>
+        <?php foreach ($res as $d) { ?>
+
+          <div class="w-full lg:w-1/2 py-2 px-3 flex flex-col justify-center items-center gap-y-3">
+            <img src="./adminpanel/<?php echo $d['image'] ?>" alt="Gallery Images" class="w-3/4 lg:w-2/4 rounded-lg aspect-square bg-auto bg-center object-cover">
+            <h2 class="text-center text-poppins text-xl capitalize font-semibold"><?php echo $d['title'] ?></h2>
+            <p class="text-center w-3/4"><?php echo $d['description'] ?></p>
+          </div>
+        <?php } ?>
+      <?php } ?>
+    </div>
+  </section>
+
+  <!--Galery Rumah End-->
+
+  <!-- Section Lokasi Start -->
+  <section>
+    <h2 class="font-bold text-2xl text-center mb-4 mt-12">Lokasi Kami</h2>
+    <div>
+      <p class="text-center mb-8">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ullam iste aperiam.
+        Quo,
+        blanditiis deserunt?
+      </p>
+      <div class="p-8 w-full flex justify-center hover:cursor-zoom-in -mt-6 h-3/4">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.1883707432808!2d110.40727397514776!3d-7.769839677072766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5993dcd3a59f%3A0xb4f5bab3a939f52b!2sJl.%20Seturan%20Raya%2C%20Kledokan%2C%20Caturtunggal%2C%20Kec.%20Depok%2C%20Kabupaten%20Sleman%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sen!2sid!4v1700219152201!5m2!1sen!2sid" style="border:0;" allowfullscreen="" loading="lazy" class="w-full" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+  <!-- Section Lokasi End -->
+
+  <!-- Footer Start -->
+  <footer class="bg-icon-color md:h-1/2">
+    <div class="md:flex md:gap-24 md:justify-center md:items-start">
+      <div class="px-8 py-16 md:py-8 md:w-1/3 md:ml-12">
+        <h2 class="text-2xl font-bold text-center text-white md:flex md:justify-start">Logo</h2>
+        <p class="mt-4 text-center text-white md:text-left">Lorem ipsum, dolor sit amet consectetur
+          adipisicing elit. Tempora,
+          aspernatur.</p>
+      </div>
+      <div class="-mt-6 md:px-8 md:py-16 md:w-1/3">
+        <h2 class="text-2xl font-bold text-center text-white">Ikuti Kami</h2>
+        <div class="flex justify-center gap-4 mt-2 md:mt-4">
+          <a href=""><img src="./assets/icons/facebook-icn.webp" alt="sosmed" class="w-12"></a>
+          <a href=""><img src="./assets/icons/instagram-icn.webp" alt="sosmed" class="w-12"></a>
+        </div>
+      </div>
+      <div class="pb-20 mt-8 md:mt-10 md:w-1/3">
+        <h2 class="text-2xl font-bold text-center text-white">Kontak Kami</h2>
+        <div>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <a href=""><img src="./assets/icons/telepon-icn.webp" alt="contact" class="w-12"></a>
+            <h4 class="text-white">0812-3456-7890</h4>
+          </div>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <a href=""><img src="./assets/icons/whatsapp-icn.webp" alt="contact" class="w-12"></a>
+            <h4 class="text-white">0812-3456-7890</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Footer End -->
+
+  <!-- Navigation For Mobile Start -->
+  <nav class="fixed bottom-0 z-20 flex items-center justify-center w-screen lg:hidden h-14 bg-primary-color">
+    <ul class="flex items-center justify-center w-full h-full gap-16 px-2">
+      <li>
+        <a href="./gallery.php">
+          <img src="./assets/icons/galeri-icn.webp" alt="galeri" class="w-8">
+        </a>
+      </li>
+      <li>
+        <a href="./index.php">
+          <img src="./assets/icons/home-icn.webp" alt="home" class="w-8">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="./assets/icons/dokumen-icn.webp" alt="document" class="w-8">
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+  <!-- Navigation For Mobile End -->
+
+  <!-- Javascript -->
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="./assets/js/swiper-bundle.min.js"></script>
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+      spaceBetween: 30,
+      centeredSlides: true,
+      observer: true,
+      ResizeObserver: true,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+    });
+  </script>
+
+  <script src="./assets/js/script.js"></script>
 </body>
 
 </html>
