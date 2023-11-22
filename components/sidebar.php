@@ -27,6 +27,11 @@ function sidebar($active)
                         <i class="align-middle" data-feather="image"></i> <span class="align-middle">Gallery</span>
                     </a>
                 </li>
+                <li class="sidebar-item <?php echo $active == 'slider' ? 'active' : '' ?>">
+                    <a class="sidebar-link" href="./slider.php">
+                        <i class="align-middle" data-feather="sidebar"></i> <span class="align-middle">Slider</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
