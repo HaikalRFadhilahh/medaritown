@@ -155,7 +155,7 @@ require('./adminpanel/database/connection.php');
         blanditiis deserunt?
       </p>
       <div class="flex justify-center w-full h-[35rem] pb-16 mt-6 hover:cursor-zoom-in">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.1883707432808!2d110.40727397514776!3d-7.769839677072766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5993dcd3a59f%3A0xb4f5bab3a939f52b!2sJl.%20Seturan%20Raya%2C%20Kledokan%2C%20Caturtunggal%2C%20Kec.%20Depok%2C%20Kabupaten%20Sleman%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sen!2sid!4v1700219152201!5m2!1sen!2sid" style="border:0;" allowfullscreen="" loading="lazy" class="w-full" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d472.13241267359876!2d110.33172999267624!3d-7.686622811887618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zN8KwNDEnMTEuNSJTIDExMMKwMTknNTQuOSJF!5e0!3m2!1sid!2sid!4v1702488335948!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full"></iframe>
       </div>
     </div>
   </section>
