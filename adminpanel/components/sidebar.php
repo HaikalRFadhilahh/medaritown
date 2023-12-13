@@ -3,7 +3,7 @@ function sidebar($active)
 { ?>
     <nav id="sidebar" class="sidebar js-sidebar">
         <div class="sidebar-content js-simplebar">
-            <a class="sidebar-brand" href="index.html">
+            <a class="sidebar-brand" href="index.php">
                 <span class="align-middle">Medaritown House</span>
             </a>
 

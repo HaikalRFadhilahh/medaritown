@@ -38,7 +38,7 @@ if ($status != 'auth' || is_null($status) || is_null($_SESSION['username']) || i
             <main class="content">
                 <div class="container-fluid p-0">
                     <?php
-                    $id = $_GET['id'];
+                    $id = isset($_GET['id']) ? $_GET['id'] : null;
                     if (is_null($id) || $id == "") {
                     ?>
                         <div id="dataSlider" class="">
